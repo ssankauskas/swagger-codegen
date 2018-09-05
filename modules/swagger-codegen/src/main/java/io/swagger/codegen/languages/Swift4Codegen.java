@@ -13,10 +13,7 @@ import io.swagger.codegen.CodegenType;
 import io.swagger.codegen.DefaultCodegen;
 import io.swagger.codegen.SupportingFile;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.Operation;
-import io.swagger.models.Swagger;
+import io.swagger.models.*;
 import io.swagger.models.parameters.HeaderParameter;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.models.properties.ArrayProperty;
@@ -250,6 +247,60 @@ public class Swift4Codegen extends DefaultCodegen implements CodegenConfig {
     }
 
     @Override
+    public void preprocessSwagger(Swagger swagger) {
+        Map<String, Path> paths = swagger.getPaths();
+
+        for (String key : paths.keySet()) {
+            Path path = paths.get(key);
+
+            if (path == null) {
+                continue;
+            }
+
+            Operation getOperation = path.getGet();
+            Operation postOperation = path.getPost();
+
+            processOperation(getOperation, key);
+            processOperation(postOperation, key);
+        }
+    }
+
+    private void processOperation(Operation operation, String key) {
+        if (operation == null) {
+            return;
+        }
+
+        Map<String, Response> responses = operation.getResponses();
+
+        if (responses == null) {
+            return;
+        }
+
+        for (String responseKey : responses.keySet()) {
+            Response response = responses.get(responseKey);
+            if (response == null) {
+                continue;
+            }
+
+            Model model = response.getResponseSchema();
+
+            if (model == null) {
+                continue;
+            }
+
+            try {
+                ModelImpl impl = (ModelImpl)model;
+                if ("object".equals(new String(impl.getType()))) {
+                    response.setResponseSchema(null);
+                }
+            }
+            catch (Exception e) {
+
+            }
+        }
+    }
+
+    @Override
     public void processOpts() {
         super.processOpts();
 
@@ -429,6 +480,8 @@ public class Swift4Codegen extends DefaultCodegen implements CodegenConfig {
             name = modelNamePrefix + "_" + name;
         }
 
+        name = removeNamespaces(name);
+
         // camelize the model name
         // phone_number => PhoneNumber
         name = camelize(name);
@@ -452,6 +505,18 @@ public class Swift4Codegen extends DefaultCodegen implements CodegenConfig {
         }
 
         return name;
+    }
+
+    /**
+     * Return the model without namespaces
+     *
+     * @param name the model name
+     * @return the model name without namespaces
+     */
+    public String removeNamespaces(String name) {
+        String[] parts = name.split("_");
+        String modelName = parts[parts.length - 1];
+        return modelName;
     }
 
     /**
