@@ -1,8 +1,9 @@
 {{#hasEnums}}
-import com.google.gson.annotations.SerializedName
+
 {{/hasEnums}}
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import com.google.gson.annotations.SerializedName
 
 /**
  * {{{description}}}
@@ -23,7 +24,7 @@ data class {{classname}} (
     * {{{description}}}
     * Values: {{#allowableValues}}{{#enumVars}}{{&name}}{{^-last}},{{/-last}}{{/enumVars}}{{/allowableValues}}
     */
-    enum class {{nameInCamelCase}}(val value: {{datatype}}){
+    enum class {{name}}(val value: {{datatype}}){
     {{#allowableValues}}{{#enumVars}}
         @SerializedName({{{value}}})
         {{&name}}({{{value}}}){{^-last}},{{/-last}}{{#-last}};{{/-last}}

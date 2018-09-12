@@ -1,4 +1,5 @@
 {{#description}}
     /* {{{description}}} */
 {{/description}}
-    var {{{name}}}: {{#isEnum}}{{classname}}.{{nameInCamelCase}}{{/isEnum}}{{^isEnum}}{{{datatype}}}{{/isEnum}}? = {{#defaultvalue}}{{defaultvalue}}{{/defaultvalue}}{{^defaultvalue}}null{{/defaultvalue}}
+    @SerializedName("{{name}}")
+    var {{{nameInCamelCase}}}: {{#isEnum}}{{classname}}.{{name}}{{/isEnum}}{{^isEnum}}{{{datatype}}}{{/isEnum}}? = {{#defaultvalue}}{{defaultvalue}}{{/defaultvalue}}{{^defaultvalue}}null{{/defaultvalue}}
