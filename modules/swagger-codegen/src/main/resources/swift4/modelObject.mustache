@@ -87,3 +87,10 @@ open class {{classname}}: Codable {
 {{/vendorExtensions.x-codegen-has-escaped-property-names}}{{/additionalPropertiesType}}
 
 }
+
+extension {{classname}}: Equatable {
+    public static func == (lhs: {{classname}}, rhs: {{classname}}) -> Bool {
+        return {{#allVars}}
+            lhs.{{name}} == rhs.{{name}} {{^-last}}&& {{/-last}} {{/allVars}}
+    }
+}
