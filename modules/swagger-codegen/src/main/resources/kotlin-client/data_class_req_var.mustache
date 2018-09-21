@@ -1,4 +1,5 @@
 {{#description}}
     /* {{{description}}} */
 {{/description}}
+    @SerializedName("{{name}}")
     var {{{nameInCamelCase}}}: {{#isEnum}}{{classname}}.{{name}}{{/isEnum}}{{^isEnum}}{{{datatype}}}{{/isEnum}}
