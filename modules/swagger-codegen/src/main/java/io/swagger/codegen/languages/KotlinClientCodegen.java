@@ -2,7 +2,9 @@ package io.swagger.codegen.languages;
 
 import io.swagger.codegen.*;
 import io.swagger.models.Model;
+import io.swagger.models.Swagger;
 import io.swagger.models.properties.Property;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +57,11 @@ public class KotlinClientCodegen extends AbstractKotlinCodegen {
         dateOptions.put(DateLibrary.JAVA8.value, "Java 8 native JSR310");
         dateLibrary.setEnum(dateOptions);
         cliOptions.add(dateLibrary);
+    }
+
+    @Override
+    public void preprocessSwagger(Swagger swagger) {
+        super.preprocessSwagger(swagger);
     }
 
     public CodegenType getTag() {
@@ -121,7 +128,14 @@ public class KotlinClientCodegen extends AbstractKotlinCodegen {
     public CodegenProperty fromProperty(String name, Property p) {
         CodegenProperty prop = super.fromProperty(name, p);
         prop.nameInCamelCase = camelize(prop.name, true);
+        if (prop.isEnum && prop.items != null) {
+            prop.datatype = prop.items.datatype;
+        }
         return prop;
     }
 
+    @Override
+    public String toEnumName(CodegenProperty property) {
+        return StringUtils.capitalize(property.name);
+    }
 }
