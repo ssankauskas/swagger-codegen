@@ -24,7 +24,7 @@ data class {{classname}} (
     * {{{description}}}
     * Values: {{#allowableValues}}{{#enumVars}}{{&name}}{{^-last}},{{/-last}}{{/enumVars}}{{/allowableValues}}
     */
-    enum class {{name}}(val value: {{datatype}}){
+    enum class {{name}}(override val value: {{datatype}}): ClsfEnum {
     {{#allowableValues}}{{#enumVars}}
         @SerializedName({{{value}}})
         {{&name}}({{{value}}}){{^-last}},{{/-last}}{{#-last}};{{/-last}}
